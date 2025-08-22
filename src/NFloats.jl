@@ -1,0 +1,6 @@
+module NFloats
+
+
+
+
+end  # NFloats
