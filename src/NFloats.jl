@@ -9,8 +9,7 @@ include("libflint.jl")
 # underlying structs
 # https://github.com/kalmarek/Arblib.jl/pull/202
 
-const GR_CTX_STRUCT_DATA_BYTES = 6 * sizeof(UInt)
-mutable struct nfloat_ctx_struct{P,F}
+mutable struct nfloat_ctx_struct{P, F}
     data::NTuple{GR_CTX_STRUCT_DATA_BYTES, UInt8}
     which_ring::UInt
     sizeof_elem::Int
