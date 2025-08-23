@@ -4,3 +4,9 @@ if !isfile(libflint_filepath)
 end
     
 const libflint_handle = Libdl.dlopen(libflint_filepath)
+
+libfloat_funcptr(sym::Symbol) = dlsym(libflint_handle, sym)
+    
+macro libflint(function_name)
+    return (:($function_name), libflint_handle)
+end
