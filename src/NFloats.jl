@@ -13,7 +13,7 @@ const libflint_handle = Libdl.dlopen(libflint_filepath)
 libfloat_fptr(sym) = dlsym(libflint_handle, sym)
     
 macro libflint(function_name)
-    return (:($function_name), FLINT_jll.libflint)
+    return (:($function_name), libflint_handle)
 end
 
 
