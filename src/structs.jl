@@ -2,14 +2,14 @@
 # underlying structs
 # https://github.com/kalmarek/Arblib.jl/pull/202
 
-mutable struct nfloat_ctx_struct{Precision, Flags}
+mutable struct NFloat_ctx{Precision, Flags}
     data::NTuple{GR_CTX_STRUCT_DATA_BYTES, UInt8}
     which_ring::UInt
     sizeof_elem::Int
     methods::Ptr{Cvoid}
     size_limit::UInt
 
-    function nfloat_ctx_struct{Precision::Int, Flags::Int}() where {Precision, Flags}
+    function NFloat_ctx{Precision::Int, Flags::Int}() where {Precision, Flags}
         ctx = new{Precision, Flags}()
         ret = init!(ctx, 64Precision, Flags)
         iszero(ret) || throw(DomainError(P, "cannot set precision to this value"))
@@ -17,25 +17,25 @@ mutable struct nfloat_ctx_struct{Precision, Flags}
     end
 end
 
-mutable struct nfloat_struct{Precision, Flags}
+mutable struct NFloat_struct{Precision, Flags}
     head::NTuple{NFLOAT_HEADER_LIMBS,UInt}
     d::NTuple{Precision, UInt}
 
-    function nfloat_struct{Precision::Int, Flags::Int}() where {Precision, Flags}
+    function NFloat_struct{Precision::Int, Flags::Int}() where {Precision, Flags}
         res = new{Precision, Flags}()
-        init!(res, nfloat_ctx_struct{Precision, Flags}())
+        init!(res, NFloat_ctx{Precision, Flags}())
         return res
     end
 end
 
 struct NFloat{Precision, Flags} <: AbstractFloat
-    nfloat::nfloat_struct{Precision, Flags}
+    nfloat::NFloat_struct{Precision, Flags}
 
     NFloat{Precision, Flags}() where {Precision, Flags} = new{Precision, Flags}(nfloat_struct{Precision, Flags}())
 end
 
 struct NFloatRef{Precision, Flags} <: AbstractFloat
-    nfloat_ptr::Ptr{nfloat_struct{Precision, Flags}}
+    nfloat_ptr::Ptr{NFloat_struct{Precision, Flags}}
     parent::Union{Nothing}
 end
 
