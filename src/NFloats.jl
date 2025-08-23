@@ -3,20 +3,8 @@ module NFloats
 using Libdl
 using FLINT_jll
 
-const libflint_filepath = FLINT_jll.libflint
-if !isfile(libflint_filepath)
-    throw(ErrorException("FLINT_jll not found"))
-end
-const libflint_handle = Libdl.dlopen(libflint_filepath)
-
+include("libflint.jl")
 include("constants.jl")
-
-
-libfloat_fptr(sym::Symbol) = dlsym(libflint_handle, sym)
-    
-macro libflint(function_name)
-    return (:($function_name), libflint_handle)
-end
 
 # Quick macro for required C calls via function pointer
 macro ccall(fsym::Symbol, rett, argt, args...)
