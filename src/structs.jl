@@ -28,6 +28,17 @@ mutable struct nfloat_struct{Precision, Flags}
     end
 end
 
+struct NFloat{Precision, Flags} <: AbstractFloat
+    nfloat::nfloat_struct{Precision, Flags}
+
+    NFloat{Precision, Flags}() where {Precision, Flags} = new{Precision, Flags}(nfloat_struct{Precision, Flags}())
+end
+
+struct NFloatRef{Precision, Flags} <: AbstractFloat
+    nfloat_ptr::Ptr{nfloat_struct{Precision, Flags}}
+    parent::Union{Nothing}
+end
+
 #???
 macro def_nfloat_struct(bits)
     nb = bits ÷ FLINT_BITS
