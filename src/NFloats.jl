@@ -26,22 +26,19 @@ mutable struct nfloat_ctx_struct{P, F}
 end
 
 const NFLOAT_HEADER_LIMBS = 2
-mutable struct nfloat_struct{P,F}
+mutable struct nfloat_struct{Precision, Flags}
     head::NTuple{NFLOAT_HEADER_LIMBS,UInt}
-    d::NTuple{P,UInt} # FIXME: Should be different for 32 bit systems
+    d::NTuple{Precision, UInt} # FIXME: Should be different for 32 bit systems
 
-    function nfloat_struct{P,F}() where {P,F}
-        @assert P isa Int && F isa Int
-        res = new{P,F}()
-        init!(res, nfloat_ctx_struct{P,F}())
+    function nfloat_struct{Precision::Int, Flags::Int}() where {Precision, Flags}
+        res = new{Precision, Flags}()
+        init!(res, nfloat_ctx_struct{Precision, Flags}())
         return res
     end
 end
 
-# or
 
-# gr_ctx_struct (public header). We mirror it by value.
-const GR_CTX_STRUCT_DATA_BYTES = 6*sizeof(Culong)
+# or
 
 struct GRDataBlob
     bytes::NTuple{GR_CTX_STRUCT_DATA_BYTES, UInt8}
@@ -60,25 +57,5 @@ mutable struct GrCtx
 end
 
 @inline _ctxref(g::GrCtx) = Ref(g.ctx)
-
-# nfloat{BITS}_struct: head[2] + d[bits/64] (public header pattern)
-# (If your FLINT build changes this, adjust below accordingly.)
-const FLINT_BITS = 64
-
-@generated function _nlimbs(::Val{B}) where {B}
-    n = Int(B) ÷ FLINT_BITS
-    :(Val{$n}())
-end
-  
-macro def_nfloat_struct(bits)
-    nb = bits ÷ FLINT_BITS
-    T  = Symbol("NFloat", bits, "Struct")
-    quote
-        struct $T
-            head::NTuple{2, Culong}
-            d::NTuple{$nb, Culong}
-        end
-    end
-end
 
 end  # NFloats
