@@ -13,5 +13,4 @@ const NFLOAT_ALLOW_ALL       = 0x04 | 0x02 | 0x01
 const NFLOAT_DISALLOW_NAN    = 0x02 | 0x01
 const NFLOAT_DISALLOW_INF    = 0x04 | 0x01
 
-const GR_CTX_STRUCT_DATA_BYTES = 6 * sizeof(UInt)
-
+const GR_CTX_STRUCT_DATA_BYTES = 6 * sizeof(UInt32)
