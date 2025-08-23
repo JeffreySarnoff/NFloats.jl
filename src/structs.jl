@@ -2,16 +2,19 @@
 # underlying structs
 # https://github.com/kalmarek/Arblib.jl/pull/202
 
-mutable struct NFloat_ctx{Precision, Flags}
+mutable struct NFloatCtx{Precision, Flags}
     data::NTuple{GR_CTX_STRUCT_DATA_BYTES, UInt8}
     which_ring::UInt
     sizeof_elem::Int
     methods::Ptr{Cvoid}
     size_limit::UInt
 
-    function NFloat_ctx{Precision::Int, Flags::Int}() where {Precision, Flags}
+    function NFloatCtx{Precision::Int, Flags::Int}() where {Precision, Flags}        
         ctx = new{Precision, Flags}()
-        ret = init!(ctx, 64Precision, Flags)
+        ret = call((:nfloat_ctx_init, libflint), Ptr{Nothing}, (Cint,), Precision)
+        finalizer(ctx) do x
+            ccall((:gr_ctx_clear, libflint), Nothing, (Ptr{Nothing},), x.ptr)
+        end
         iszero(ret) || throw(DomainError(P, "cannot set precision to this value"))
         return ctx
     end
@@ -23,7 +26,7 @@ mutable struct NFloat_struct{Precision, Flags}
 
     function NFloat_struct{Precision::Int, Flags::Int}() where {Precision, Flags}
         res = new{Precision, Flags}()
-        init!(res, NFloat_ctx{Precision, Flags}())
+        init!(res, NFloatCtx{Precision, Flags}())
         return res
     end
 end
