@@ -10,7 +10,7 @@ end
     
 const libflint_handle = Libdl.dlopen(libflint_filepath)
 
-libfloat_fptr(sym) = dlsym(libflint_handle, sym)
+libfloat_fptr(sym::Symbol) = dlsym(libflint_handle, sym)
     
 macro libflint(function_name)
     return (:($function_name), libflint_handle)
