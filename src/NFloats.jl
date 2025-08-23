@@ -3,23 +3,8 @@ module NFloats
 using Libdl
 using FLINT_jll
 
-include("libflint.jl")
 include("constants.jl")
-
-# Quick macro for required C calls via function pointer
-macro ccall(fsym::Symbol, rett, argt, args...)
-    quote
-        local _fp = libfloat_fptr(fsym)
-        ccall(_fp, $(esc(rett)), $(esc(argt)), $(map(esc, args)...))
-    end
-end
-
-macro ccall(fname, rett, argt, args...)
-    quote
-        local _fp = libfloat_fptr(Symbol($fname))
-        ccall(_fp, $(esc(rett)), $(esc(argt)), $(map(esc, args)...))
-    end
-end
+include("libflint.jl")
 
 # underlying structs
 # https://github.com/kalmarek/Arblib.jl/pull/202
